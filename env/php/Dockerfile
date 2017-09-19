@@ -36,11 +36,9 @@ RUN apt-get update \
 # Next composer and global composer package, as their versions may change from time to time
 
 # Nginx example config and composer wrapper
-COPY ../../src /var/www/html
+COPY src /var/www/html
 
 WORKDIR /var/www/html
-
-RUN composer update --prefer-dist --no-progress
 
 FROM prod as dev
 
@@ -58,9 +56,9 @@ RUN yes | pecl install xdebug \
         && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 # Install nodeJs + NPM
-WORKDIR ~
 RUN curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh
-RUN sh nodesource_setup.sh
+RUN chmod +x nodesource_setup.sh
+RUN ./nodesource_setup.sh
 RUN rm nodesource_setup.sh
 
 RUN apt-get update \
@@ -68,6 +66,4 @@ RUN apt-get update \
             nodejs \
             build-essential \
         --no-install-recommends \
-    && rm -r /var/lib/apt/lists/* \
-
-WORKDIR /var/www/html
+    && rm -r /var/lib/apt/lists/*
