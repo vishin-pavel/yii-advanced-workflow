@@ -44,6 +44,8 @@ services:
 
   httpserver:
     image: nginx:latest
+    build:
+      context: nginx
     container_name: httpserver
     networks:
       - backend
