@@ -13,7 +13,7 @@ services:
     container_name: rabbitmq
     networks:
       - backend
-    hostname: "evotor-rabbitmq"
+    hostname: "rabbitmq"
     ports:
       - '15672:15672'
     environment:
@@ -42,20 +42,10 @@ services:
     ports:
       - "3306:3306"
 
-  httpserver:
-    image: nginx:latest
-    container_name: httpserver
-    volumes:
-      - ./nginx/sites/default.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      - backend
-    ports:
-     - "80:80"
-
   app:
     build:
       context: ../
-      dockerfile: ./env/php/Dockerfile
+      dockerfile: ./env/app/Dockerfile
     container_name: app
     networks:
       - backend
@@ -64,14 +54,9 @@ services:
       PHP_IDE_CONFIG: "serverName=backend.dev"
     volumes:
       - ../src/:/var/www/html
-
-  static-server:
-    image: nginx:latest
-    container_name: static-server
-    networks:
-      - backend
-    volumes:
-      - ./nginx/sites/static-server.conf:/etc/nginx/conf.d/default.conf
+      - ./app/sites/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+     - "80:80"
 
 networks:
   backend:

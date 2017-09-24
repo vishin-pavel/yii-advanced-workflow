@@ -55,8 +55,8 @@ services:
   app:
     build:
       context: ../
-      dockerfile: ./env/php/Dockerfile
-      target: prod
+      dockerfile: ./env/app/Dockerfile
+      target: dev
     container_name: app
     networks:
       - backend

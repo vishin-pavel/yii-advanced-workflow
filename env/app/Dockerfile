@@ -5,14 +5,21 @@ MAINTAINER it.vishin@gmail.com
 ENV PATH $PATH:/root/.composer/vendor/bin
 
 # PHP extensions come first, as they are less likely to change between Yii releases
-RUN apt-get update \
+RUN \
+       apt-get update \
+    && apt-get install -y wget \
+    && echo "deb http://nginx.org/packages/debian/ jessie nginx" >> /etc/apt/sources.list.d/nginx.list \
+    && echo "deb-src http://nginx.org/packages/debian/ jessie nginx" >> /etc/apt/sources.list.d/nginx.list \
+    && wget -q http://nginx.org/keys/nginx_signing.key \
+    && apt-key add nginx_signing.key \
+    && apt-get update \
     && apt-get -y install \
-            git \
             g++ \
             libicu-dev \
             libmcrypt-dev \
             zlib1g-dev \
-        --no-install-recommends \
+            nginx \
+            supervisor \
 
     # Install PHP extensions
     && docker-php-ext-install intl \
@@ -33,12 +40,13 @@ RUN apt-get update \
     # Fix write permissions with shared folders
     && usermod -u 1000 www-data
 
-# Next composer and global composer package, as their versions may change from time to time
-
-# Nginx example config and composer wrapper
+COPY ./env/app/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY src /var/www/html
+COPY ./env/app/sites/default.conf /etc/nginx/conf.d/default.conf
 
 WORKDIR /var/www/html
+
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
 
 FROM prod as dev
 
@@ -65,5 +73,6 @@ RUN apt-get update \
     && apt-get -y install \
             nodejs \
             build-essential \
+            git \
         --no-install-recommends \
     && rm -r /var/lib/apt/lists/*
