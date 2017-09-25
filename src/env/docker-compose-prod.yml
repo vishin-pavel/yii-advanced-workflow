@@ -60,9 +60,6 @@ services:
     container_name: app
     networks:
       - backend
-    environment:
-      XDEBUG_CONFIG: "idekey=PHPSTORM remote_host=172.200.0.1"
-      PHP_IDE_CONFIG: "serverName=backend.dev"
     volumes:
       - ../src/:/var/www/html
 
@@ -72,4 +69,3 @@ networks:
     ipam:
       config:
         - subnet: 172.200.0.0/16
-          gateway: 172.200.0.1
