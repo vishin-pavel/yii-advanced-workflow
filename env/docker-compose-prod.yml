@@ -36,9 +36,9 @@ services:
       - "./mariadb/data:/var/lib/mysql:rw"
     environment:
       - "MYSQL_DATABASE=app"
-      - "MYSQL_USER=user"
-      - "MYSQL_PASSWORD=123"
-      - "MYSQL_ROOT_PASSWORD=123"
+      - "MYSQL_USER=app"
+      - "MYSQL_PASSWORD=oLd12niV8k"
+      - "MYSQL_ROOT_PASSWORD=IivahW03oc"
     ports:
       - "3306:3306"
 
